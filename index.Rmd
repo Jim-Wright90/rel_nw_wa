@@ -1,0 +1,92 @@
+---
+title: "REL NW Washington"
+output: 
+    html_document:
+      theme: spacelab
+      highlight: tango
+      toc: TRUE
+      toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r setup 1, include=FALSE}
+library(tidyverse)
+library(rio)
+library(here)
+library(colorblindr)
+library(gghighlight)
+library(forcats)
+library(ggrepel)
+library(gt)
+library(knitr)
+library(kableExtra)
+library(reactable)
+library(plotly)
+library(SCVA)
+library(patchwork)
+
+theme_set(theme_minimal(15) +
+            theme(legend.position = "bottom",
+                  panel.grid.major.x = element_line(color = "gray60"),
+                  panel.grid.minor.x = element_blank(),
+                  panel.grid.major.y = element_blank())
+          )
+
+```
+
+```{r, include=FALSE}
+courses <- import(here("data", "courses.sav"),
+               setclass = "tbl_df") %>% 
+  characterize() %>% 
+  janitor::clean_names() %>% 
+  filter(state == "WA")
+
+wa_courses <- import(here("data", "wa_courses.xlsx"),
+               setclass = "tbl_df") %>% 
+  janitor::clean_names() 
+
+str(wa_courses)
+
+quick_data <- wa_courses %>% 
+  select(1, 2, 3, 5, 15, 46, 52) %>% 
+  na.omit()
+```
+
+```{r, include=FALSE}
+quick_data2 <- quick_data %>% 
+  mutate(locale_code_4 = recode(locale_code_4,
+                                "1" = "City",
+                                "2" = "Suburb",
+                                "3" = "Town",
+                                "4" = "Rural"))
+```
+
+## Summary 
+
+### School Type 
+
+```{r, include=FALSE}
+
+sch_type <- quick_data2 %>% 
+  group_by(locale_code_4) %>% 
+  count()
+
+sch_type_plot <- sch_type %>% 
+  ggplot(aes(fct_reorder(locale_code_4, n), n)) +
+  geom_col(fill = "#56B4E9",
+             alpha = 0.7) +
+  geom_text(aes(locale_code_4, n, label = n),
+            size = 4,
+            nudge_y = -2.0,
+            nudge_x = 0.3) +
+  labs(x = "School Type",
+       y = "Total")
+```
+
+```{r, include=TRUE}
+ggplotly(sch_type_plot)
+```
