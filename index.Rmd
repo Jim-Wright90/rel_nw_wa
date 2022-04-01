@@ -54,6 +54,10 @@ str(wa_courses)
 quick_data <- wa_courses %>% 
   select(1, 2, 3, 5, 15, 46, 52) %>% 
   na.omit()
+
+quick_data[sapply(quick_data, is.character)] <- lapply(quick_data[sapply(quick_data, is.character)], as.factor)
+
+str(quick_data)
 ```
 
 ```{r, include=FALSE}
@@ -87,6 +91,64 @@ sch_type_plot <- sch_type %>%
        y = "Total")
 ```
 
+### Advanced Course Offerings  
+
 ```{r, include=TRUE}
 ggplotly(sch_type_plot)
 ```
+
+```{r, include=FALSE}
+str(quick_data2)
+
+quick_data2[sapply(quick_data2, is.character)] <- lapply(quick_data2[sapply(quick_data2, is.character)],as.factor)
+
+str(quick_data2)
+```
+
+```{r, include=FALSE}
+course_offer <- quick_data2 %>% 
+  group_by(locale_code_4, advm_ind) %>% 
+  count()
+
+course_offer_table <- course_offer %>% 
+    reactable(
+    columns = list(
+      locale_code_4 = colDef(name = "School Type",
+                   align = "center"),
+      advm_ind = colDef(name = "Advanced Courses",
+                        align = "center"),
+      n = colDef(name = "Total",
+                 align = "center")),
+    striped = TRUE,
+    outlined = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    bordered = TRUE
+  )
+```
+
+```{r, include=TRUE}
+course_offer_table
+```
+
+```{r, include=FALSE}
+
+47 + 33 
+# 80 rural high schools 
+
+47 / 80
+
+22 + 76
+
+76 / 98
+
+25 + 80
+
+80 / 105
+
+28 + 36
+
+36/64
+```
+
+58.75% of `Rural` high schools and 56.25% of high schools classified as `Town` offer advanced courses, while 77.55% of `City` high schools and 76.19% of `Suburban` high schools offer advanced courses. 
