@@ -152,3 +152,34 @@ course_offer_table
 ```
 
 58.75% of `Rural` high schools and 56.25% of high schools classified as `Town` offer advanced courses, while 77.55% of `City` high schools and 76.19% of `Suburban` high schools offer advanced courses. 
+
+```{r, include=FALSE}
+head(quick_data2)
+
+chi_data <- quick_data2 %>% 
+  select(locale_code_4, advm_ind)
+
+str(chi_data)
+
+table(chi_data$locale_code_4, chi_data$advm_ind)
+
+```
+
+```{r, include=TRUE}
+test_chi <- chisq.test(table(chi_data$locale_code_4, chi_data$advm_ind))
+test_chi
+```
+
+```{r, include=TRUE}
+test_chi$statistic
+```
+
+```{r, include=TRUE}
+test_chi$p.value
+```
+
+```{r, include=TRUE}
+summary(table(chi_data$locale_code_4, chi_data$advm_ind))
+```
+
+The results of the chi-square test are significant with a *p*-value of .002, suggesting there is a significant relationship between school type and the status of advanced course offerings. 
