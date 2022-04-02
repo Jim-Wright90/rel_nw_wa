@@ -131,6 +131,8 @@ course_offer_table <- course_offer %>%
 course_offer_table
 ```
 
+### *Chi-Square* Analysis
+
 ```{r, include=FALSE}
 
 47 + 33 
@@ -183,3 +185,43 @@ summary(table(chi_data$locale_code_4, chi_data$advm_ind))
 ```
 
 The results of the chi-square test are significant with a *p*-value of .002, suggesting there is a significant relationship between school type and the status of advanced course offerings. 
+
+$$X^2 = 14.647, df = 3, p = .002$$
+
+
+### *Chi-Square* Visualizations 
+
+```{r, include=FALSE}
+# install.packages("gplots")
+library(gplots)
+library(graphics)
+# install.packages("vcd")
+library(vcd)
+
+chi_data2 <- chi_data %>% 
+  rename("SchoolType" = locale_code_4,
+         "AdvancedCourses" = advm_ind)
+
+```
+
+```{r, include=TRUE}
+mosaic(~ SchoolType + AdvancedCourses,
+  direction = c("v", "h"),
+  data = chi_data2,
+  shade = TRUE
+)
+```
+
+
+```{r, include=FALSE}
+# install.packages("ggstatsplot")
+library(ggstatsplot)
+```
+
+```{r, include=TRUE}
+ggbarstats(
+  data = chi_data2,
+  x = SchoolType,
+  y = AdvancedCourses) 
+
+```
